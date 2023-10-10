@@ -9,6 +9,7 @@ const { registerUser,
     getUserProfile,
     updatePassword,
     updateProfile,
+    allUsers
 } = require('../controllers/authController');
 router.post('/register', registerUser);
 router.post('/login', loginUser);
@@ -19,7 +20,7 @@ router.put('/password/reset/:token', resetPassword);
 router.get('/me', isAuthenticatedUser, getUserProfile)
 router.put('/password/update', isAuthenticatedUser, updatePassword)
 router.put('/me/update', isAuthenticatedUser, updateProfile)
-router.get('/admin/users'), isAuthenticatedUser, allUsers)
+router.get('/admin/users', isAuthenticatedUser, allUsers)
 
 // router.get('/logout',logout);
 
