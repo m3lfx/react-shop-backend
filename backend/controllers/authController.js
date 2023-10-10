@@ -150,15 +150,48 @@ exports.getUserProfile = async (req, res, next) => {
 
 exports.updatePassword = async (req, res, next) => {
     const user = await User.findById(req.user.id).select('password');
-
     // Check previous user password
     const isMatched = await user.comparePassword(req.body.oldPassword)
     if (!isMatched) {
         return res.status(400).json({ message: 'Old password is incorrect' })
-        
     }
     user.password = req.body.password;
     await user.save();
     sendToken(user, 200, res)
 
+}
+
+exports.updateProfile = async (req, res, next) => {
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    // Update avatar
+    // if (req.body.avatar !== '') {
+    //     const user = await User.findById(req.user.id)
+
+    //     const image_id = user.avatar.public_id;
+    //     const res = await cloudinary.v2.uploader.destroy(image_id);
+
+    //     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    //         folder: 'avatars',
+    //         width: 150,
+    //         crop: "scale"
+    //     })
+
+    //     newUserData.avatar = {
+    //         public_id: result.public_id,
+    //         url: result.secure_url
+    //     }
+    // }
+
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+        new: true,
+        runValidators: true,
+    })
+
+    res.status(200).json({
+        success: true
+    })
 }
