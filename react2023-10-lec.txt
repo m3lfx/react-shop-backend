@@ -131,7 +131,8 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) => {
 http://localhost:4001/api/v1/products?keyword=apple
 products?keyword=apple&price[gte]=1&price[lte]=200
 
-models/userconst mongoose = require('mongoose');
+models/user
+const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
