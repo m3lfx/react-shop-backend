@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const sendToken = require('../utils/jwtToken');
+const sendEmail = require('../utils/sendEmail')
 
 // const ErrorHandler = require('../utils/errorHandler');
 
