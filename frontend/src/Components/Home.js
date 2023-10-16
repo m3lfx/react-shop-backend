@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
+import { useParams } from "react-router-dom"
 import MetaData from './Layout/MetaData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
@@ -11,15 +12,17 @@ const Home = () => {
     const [productsCount, setProductsCount] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [resPerPage, setResPerPage] = useState(0)
+    const [filteredProductsCount, setFilteredProductsCount] = useState(0)
+    let { keyword } = useParams();
 
     function setCurrentPageNo(pageNumber) {
         setCurrentPage(pageNumber)
     }
 
-    const getProducts = async (page=1) => {
+    const getProducts = async (page=1, keyword='') => {
         let link = ''
         if (page) {
-            link = `http://localhost:4001/api/v1/products/?page=${page}`
+            link = `http://localhost:4001/api/v1/products/?page=${page}&keyword=${keyword}`
         }
         else {
             link = `http://localhost:4001/api/v1/products`
@@ -31,14 +34,18 @@ const Home = () => {
         setProducts(res.data.products)
         setResPerPage(res.data.resPerPage)
         setProductsCount(res.data.productsCount)
+        setFilteredProductsCount(res.data.filteredProductsCount)
         setLoading(false)
     }
     useEffect(() => {
-        getProducts(currentPage)
-    }, [currentPage]);
+        getProducts(currentPage, keyword)
+    }, [currentPage, keyword,]);
 
     let count = productsCount
-    console.log(currentPage)
+    if (keyword) {
+        count = filteredProductsCount
+    }
+    console.log(currentPage,keyword)
     return (
         <>
             {loading ? <Loader /> : (<Fragment>

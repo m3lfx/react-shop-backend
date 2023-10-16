@@ -31,6 +31,7 @@ exports.getProducts = async (req,res,next) => {
 	// const products = await Product.find();
 	apiFeatures.pagination(resPerPage);
 	const products = await apiFeatures.query;
+	let filteredProductsCount = products.length;
 	if(!products)
 	return res.status(404).json({
 		success: false,
@@ -41,7 +42,8 @@ exports.getProducts = async (req,res,next) => {
 		count: products.length,
 		productsCount,
 		products,
-		resPerPage
+		resPerPage,
+		filteredProductsCount,
 	})
 }
 
