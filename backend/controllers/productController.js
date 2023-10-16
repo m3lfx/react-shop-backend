@@ -31,11 +31,17 @@ exports.getProducts = async (req,res,next) => {
 	// const products = await Product.find();
 	apiFeatures.pagination(resPerPage);
 	const products = await apiFeatures.query;
-	res.status(200).json({
+	if(!products)
+	return res.status(404).json({
+		success: false,
+		message: 'Product not found'
+	})
+	return res.status(200).json({
 		success: true,
 		count: products.length,
 		productsCount,
-		products
+		products,
+		resPerPage
 	})
 }
 
