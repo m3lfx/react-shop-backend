@@ -3,6 +3,11 @@ import { useParams } from "react-router-dom"
 import MetaData from './Layout/MetaData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css';
+
+
+
 import Product from './Product/Product'
 import Loader from './Layout/Loader'
 const Home = () => {
@@ -13,20 +18,19 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [resPerPage, setResPerPage] = useState(0)
     const [filteredProductsCount, setFilteredProductsCount] = useState(0)
+    const [price, setPrice] = useState([1, 1000]);
     let { keyword } = useParams();
 
+    const createSliderWithTooltip = Slider.createSliderWithTooltip;
+    const Range = createSliderWithTooltip(Slider.Range);
     function setCurrentPageNo(pageNumber) {
         setCurrentPage(pageNumber)
     }
 
-    const getProducts = async (page=1, keyword='') => {
-        let link = ''
-        if (page) {
-            link = `http://localhost:4001/api/v1/products/?page=${page}&keyword=${keyword}`
-        }
-        else {
-            link = `http://localhost:4001/api/v1/products`
-        }
+    const getProducts = async (page = 1, keyword = '', price) => {
+    
+       
+         let   link = `http://localhost:4001/api/v1/products/?page=${page}&keyword=${keyword}&price[lte]=${price[1]}&price[gte]=${price[0]}`
        
         console.log(link)
         let res = await axios.get(link)
@@ -37,15 +41,17 @@ const Home = () => {
         setFilteredProductsCount(res.data.filteredProductsCount)
         setLoading(false)
     }
+
+
     useEffect(() => {
-        getProducts(currentPage, keyword)
-    }, [currentPage, keyword,]);
+        getProducts(currentPage, keyword, price)
+    }, [currentPage, keyword, price,]);
 
     let count = productsCount
     if (keyword) {
         count = filteredProductsCount
     }
-    console.log(currentPage,keyword)
+    console.log(currentPage, keyword)
     return (
         <>
             {loading ? <Loader /> : (<Fragment>
@@ -54,10 +60,50 @@ const Home = () => {
 
                     <h1 id="products_heading">Latest Products</h1>
                     <section id="products" className="container mt-5">
-                        <div className="row">
+                        {/* <div className="row">
                             {products && products.map(product => (
                                 <Product key={product._id} product={product} />
                             ))}
+                        </div> */}
+                        <div className="row">
+                            {keyword ? (
+                                <Fragment>
+                                    <div className="col-6 col-md-3 mt-5 mb-5">
+                                        <div className="px-5">
+                                            <Range
+                                                marks={{
+                                                    1: `$1`,
+                                                    1000: `$1000`
+                                                }}
+                                                min={1}
+                                                max={1000}
+                                                defaultValue={[1, 1000]}
+                                                tipFormatter={value => `$${value}`}
+                                                tipProps={{
+                                                    placement: "top",
+                                                    visible: true
+                                                }}
+                                                value={price}
+                                                onChange={price => setPrice(price)}
+                                            />
+                                           
+                                        </div>
+                                    </div>
+
+                                    <div className="col-6 col-md-9">
+                                        <div className="row">
+                                            {products.map(product => (
+                                                <Product key={product._id} product={product} col={4} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </Fragment>
+                            ) : (
+                                products.map(product => (
+                                    <Product key={product._id} product={product} col={3} />
+                                ))
+                            )}
+
                         </div>
                     </section>
                     {resPerPage <= count && (
