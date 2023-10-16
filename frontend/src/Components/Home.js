@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom"
 import MetaData from './Layout/MetaData'
 import axios from 'axios'
 import Pagination from 'react-js-pagination'
-import Slider from 'rc-slider'
+import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 
 
 import Product from './Product/Product'
 import Loader from './Layout/Loader'
+
 const Home = () => {
     const [loading, setLoading] = useState(true)
     const [products, setProducts] = useState([])
@@ -19,19 +20,39 @@ const Home = () => {
     const [resPerPage, setResPerPage] = useState(0)
     const [filteredProductsCount, setFilteredProductsCount] = useState(0)
     const [price, setPrice] = useState([1, 1000]);
+    const [category, setCategory] = useState('');
     let { keyword } = useParams();
 
     const createSliderWithTooltip = Slider.createSliderWithTooltip;
     const Range = createSliderWithTooltip(Slider.Range);
+
+    const categories = [
+        'Electronics',
+        'Cameras',
+        'Laptops',
+        'Accessories',
+        'Headphones',
+        'Food',
+        "Books",
+        'Clothes/Shoes',
+        'Beauty/Health',
+        'Sports',
+        'Outdoor',
+        'Home'
+    ]
+
     function setCurrentPageNo(pageNumber) {
         setCurrentPage(pageNumber)
     }
 
-    const getProducts = async (page = 1, keyword = '', price) => {
-    
-       
-         let   link = `http://localhost:4001/api/v1/products/?page=${page}&keyword=${keyword}&price[lte]=${price[1]}&price[gte]=${price[0]}`
-       
+    const getProducts = async (page = 1, keyword = '', price, category) => {
+
+        let link = ''
+        link = `http://localhost:4001/api/v1/products?page=${page}&keyword=${keyword}&price[lte]=${price[1]}&price[gte]=${price[0]}`
+
+        if (category) {
+            link = `${process.env.REACT_APP_API}/api/v1/products?keyword=${keyword}&page=${page}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}`
+        }
         console.log(link)
         let res = await axios.get(link)
         console.log(res)
@@ -44,14 +65,14 @@ const Home = () => {
 
 
     useEffect(() => {
-        getProducts(currentPage, keyword, price)
-    }, [currentPage, keyword, price,]);
+        getProducts(currentPage, keyword, price, category)
+    }, [currentPage, keyword, price, category,]);
 
     let count = productsCount
     if (keyword) {
         count = filteredProductsCount
     }
-    console.log(currentPage, keyword)
+    console.log(currentPage, keyword, category)
     return (
         <>
             {loading ? <Loader /> : (<Fragment>
@@ -86,7 +107,27 @@ const Home = () => {
                                                 value={price}
                                                 onChange={price => setPrice(price)}
                                             />
-                                           
+                                            <hr className="my-5" />
+                                            <div className="mt-5">
+                                                <h4 className="mb-3">
+                                                    Categories
+                                                </h4>
+                                                <ul className="pl-0">
+                                                    {categories.map(category => (
+                                                        <li
+                                                            style={{
+                                                                cursor: 'pointer',
+                                                                listStyleType: 'none'
+                                                            }}
+                                                            key={category}
+                                                            onClick={() => setCategory(category)}
+                                                        >
+                                                            {category}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
                                         </div>
                                     </div>
 
