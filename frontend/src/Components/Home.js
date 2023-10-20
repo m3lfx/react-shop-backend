@@ -5,11 +5,13 @@ import axios from 'axios'
 import Pagination from 'react-js-pagination'
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-
-
-
 import Product from './Product/Product'
 import Loader from './Layout/Loader'
+import Header from './Layout/Header'
+import { getUser, logout } from '../utils/helpers'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
     const [loading, setLoading] = useState(true)
@@ -21,6 +23,7 @@ const Home = () => {
     const [filteredProductsCount, setFilteredProductsCount] = useState(0)
     const [price, setPrice] = useState([1, 1000]);
     const [category, setCategory] = useState('');
+    
     let { keyword } = useParams();
 
     const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -62,7 +65,8 @@ const Home = () => {
         setFilteredProductsCount(res.data.filteredProductsCount)
         setLoading(false)
     }
-
+    
+    
 
     useEffect(() => {
         getProducts(currentPage, keyword, price, category)
@@ -75,7 +79,9 @@ const Home = () => {
     console.log(currentPage, keyword, category)
     return (
         <>
+            
             {loading ? <Loader /> : (<Fragment>
+
                 <MetaData title={'Buy Best Products Online'} />
                 <div className="container container-fluid">
 

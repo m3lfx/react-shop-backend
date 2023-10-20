@@ -6,7 +6,7 @@ import Loader from '../Layout/Loader'
 import MetaData from '../Layout/MetaData'
 
 import axios from 'axios'
-import { toast, ToastContainer } from 'react-toastify';
+import { toast,  } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetails = () => {
