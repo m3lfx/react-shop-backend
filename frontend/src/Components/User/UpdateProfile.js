@@ -69,13 +69,6 @@ const UpdateProfile = () => {
     useEffect(() => {
         getProfile()
 
-        // if (isUpdated) {
-        //     toast.success('user updated', {
-        //         position: toast.POSITION.BOTTOM_RIGHT
-        //     });
-        //     // getProfile();
-        //     navigate('/me',{ replace: true })
-        // }
     }, [])
 
     const submitHandler = (e) => {

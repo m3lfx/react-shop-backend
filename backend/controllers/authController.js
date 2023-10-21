@@ -97,7 +97,7 @@ exports.forgotPassword = async (req, res, next) => {
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
     // Create reset password url
-    const resetUrl = `${req.protocol}://${req.get('host')}/password/reset/${resetToken}`;
+    const resetUrl = `${req.protocol}://localhost:3000/password/reset/${resetToken}`;
     const message = `Your password reset token is as follow:\n\n${resetUrl}\n\nIf you have not requested this email, then ignore it.`
     try {
         await sendEmail({
@@ -156,6 +156,7 @@ exports.getUserProfile = async (req, res, next) => {
 }
 
 exports.updatePassword = async (req, res, next) => {
+    console.log(req.body.password)
     const user = await User.findById(req.user.id).select('password');
     // Check previous user password
     const isMatched = await user.comparePassword(req.body.oldPassword)
