@@ -42,10 +42,9 @@ const Payment = ({cartItems, shippingInfo}) => {
             toast.success('order created', {
                 position: toast.POSITION.BOTTOM_RIGHT
             });
-            localStorage.removeItem('cartItems');
-            localStorage.removeItem('shippingInfo');
-            sessionStorage.removeItem('orderInfo')
-            navigate('/me')
+           
+            // sessionStorage.removeItem('orderInfo')
+            navigate('/success')
     
         } catch (error) {
             toast.error(error.response.data.message, {

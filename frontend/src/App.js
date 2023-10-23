@@ -19,6 +19,12 @@ import Cart from './Components/Cart/Cart';
 import Shipping from './Components/Cart/Shipping';
 import ConfirmOrder from './Components/Cart/ConfirmOrder';
 import Payment from './Components/Cart/Payment';
+import OrderSuccess from './Components/Cart/OrderSuccess';
+import ListOrders from './Components/Order/ListOrders';
+import OrderDetails from './Components/Order/OrderDetails';
+import Dashboard from './Components/Admin/Dashboard';
+import ProductsList from './Components/Admin/ProductsList';
+import NewProduct from './Components/Admin/NewProduct';
 
 import axios from 'axios';
 
@@ -117,6 +123,13 @@ function App() {
           <Route path="/shipping" element={<Shipping shipping={state.shippingInfo} saveShippingInfo={saveShippingInfo} />} />
           <Route path="/confirm" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />}  />
           <Route path="/payment" element={<Payment cartItems={state.cartItems} shippingInfo={state.shippingInfo} />}  />
+          <Route path="/success" element={<OrderSuccess />}  />
+          <Route path="/orders/me" element={<ListOrders />}  />
+          <Route path="/order/:id" element={<OrderDetails />}  />
+
+          <Route path="/dashboard" element={<Dashboard />}  />
+          <Route path="/admin/products" element={<ProductsList />}  />
+          <Route path="/admin/product" element={<NewProduct  />}  />
         </Routes>
       </Router>
       <Footer />
