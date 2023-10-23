@@ -13,8 +13,6 @@ const UpdatePassword = () => {
     const [error, setError] = useState('')
     const [isUpdated, setIsUpdated] = useState(false)
     const [loading, setLoading] = useState(false)
-
-
     let navigate = useNavigate();
     const updatePassword = async (formData) => {
         console.log(formData)

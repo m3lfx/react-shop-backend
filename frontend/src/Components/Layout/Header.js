@@ -7,21 +7,22 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { getUser, logout } from '../../utils/helpers'
 
+const Header = (props) => {
+    console.log(props)
+    const [user, setUser] = useState({})
 
-const Header = ({isAuth}) => {
-	const [user, setUser] = useState({})
-	
+
     const navigate = useNavigate()
-	const logoutUser = async () => {
-        
+    const logoutUser = async () => {
+
         try {
             await axios.get(`${process.env.REACT_APP_API}/api/v1/logout`)
             setUser('')
-            logout(()=> navigate('/'))
+            logout(() => navigate('/'))
         } catch (error) {
             toast.error(error.response.data.message)
-            
-        } 
+
+        }
     }
     const logoutHandler = () => {
         logoutUser();
@@ -30,23 +31,22 @@ const Header = ({isAuth}) => {
         });
     }
 
-	useEffect(() => {
+    useEffect(() => {
         setUser(getUser())
     }, []);
-	
-	
-    
-	console.log(user)
-	return (
-		<Fragment>
-			<nav className="navbar row">
-				<div className="col-12 col-md-3">
-					<div className="navbar-brand">
-						<img src="./images/shopit_logo.png" />
-					</div>
-				</div>
-				{/* <div className="col-12 col-md-6 mt-2 mt-md-0"> */}
-					{/* <div className="input-group">
+    console.log(user)
+    return (
+        <Fragment>
+            <nav className="navbar row">
+                <Link to="/" style={{ textDecoration: 'none' }} >
+                    <div className="col-12 col-md-3">
+                        <div className="navbar-brand">
+                            <img src="./images/shopit_logo.png" />
+                        </div>
+                    </div>
+                </Link>
+                {/* <div className="col-12 col-md-6 mt-2 mt-md-0"> */}
+                {/* <div className="input-group">
 			          <input
 			            type="text"
 			            id="search_field"
@@ -59,13 +59,18 @@ const Header = ({isAuth}) => {
 			            </button>
 			          </div>
 			        </div> */}
-					<div className="col-12 col-md-6 mt-2 mt-md-0">
-						<Search />
-					</div>
-				{/* </div> */}
+                <div className="col-12 col-md-6 mt-2 mt-md-0">
+                    <Search />
+                </div>
+                {/* </div> */}
 
-				<div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-				{user ? (<div className="ml-4 dropdown d-inline">
+                <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
+                    <Link to="/cart" style={{ textDecoration: 'none' }} >
+                        <span id="cart" className="ml-3">Cart</span>
+                        <span className="ml-1" id="cart_count">{props.cartItems.length}</span>
+                        {/*<span className="ml-1" id="cart_count">2</span>*/}
+                    </Link>
+                    {user ? (<div className="ml-4 dropdown d-inline">
                         <Link to="#!" className="btn dropdown-toggle text-white mr-4" type="button" id="dropDownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <figure className="avatar avatar-nav">
                                 <img
@@ -92,12 +97,12 @@ const Header = ({isAuth}) => {
                         </div>
                     </div>) : <Link to="/login" className="btn ml-4" id="login_btn">Login</Link>}
 
-					<span id="cart" className="ml-3">Cart</span>
-					<span className="ml-1" id="cart_count">2</span>
-				</div>
-			</nav>
-		</Fragment>
-	)
+                    {/* <span id="cart" className="ml-3">Cart</span>
+					<span className="ml-1" id="cart_count">{props.cartItems.length}</span> */}
+                </div>
+            </nav>
+        </Fragment>
+    )
 }
 
 export default Header

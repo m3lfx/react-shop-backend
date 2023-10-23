@@ -6,32 +6,38 @@ import Loader from '../Layout/Loader'
 import MetaData from '../Layout/MetaData'
 
 import axios from 'axios'
-import { toast,  } from 'react-toastify';
+import { toast, } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-const ProductDetails = () => {
+const ProductDetails = ({cartItems, addItemToCart}) => {
 
     const [loading, setLoading] = useState(true)
     const [product, setProduct] = useState({})
     const [error, setError] = useState('')
+    const [quantity, setQuantity] = useState(1)
+    const [cart, setCart] = useState([])
+    // const [state, setState] = useState({
+    //     cartItems: localStorage.getItem('cartItems')
+    //         ? JSON.parse(localStorage.getItem('cartItems'))
+    //         : [], shippingInfo: localStorage.getItem('shippingInfo')
+    //             ? JSON.parse(localStorage.getItem('shippingInfo'))
+    //             : {},
+    // })
 
 
     let { id } = useParams()
     let navigate = useNavigate()
     // const alert = useAlert();
+    // const { cartItems } = state
 
     const productDetails = async (id) => {
         let link = `http://localhost:4001/api/v1/product/${id}`
-        console.log(link)
-        
-       
         try {
             let res = await axios.get(link)
-            console.log(res)
             setProduct(res.data.product)
             setLoading(false)
-            
-          } catch (err) {
+
+        } catch (err) {
             console.log(err)
 
             // setLoading(false)
@@ -39,10 +45,69 @@ const ProductDetails = () => {
             setLoading(false)
             // toast.error(error)
             // toast.error(err.response.data.message)
-          }
- 
+        }
+
+    }
+    const increaseQty = () => {
+        const count = document.querySelector('.count')
+        if (count.valueAsNumber >= product.stock) return;
+        const qty = count.valueAsNumber + 1;
+        setQuantity(qty)
     }
 
+    const decreaseQty = () => {
+        const count = document.querySelector('.count')
+        if (count.valueAsNumber <= 1) return;
+        const qty = count.valueAsNumber - 1;
+        setQuantity(qty)
+    }
+    // const addItemToCart = async (id, quantity) => {
+    //     console.log(id, quantity)
+    //     try {
+    //         const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/${id}`)
+    //         const item = {
+    //             product: data.product._id,
+    //             name: data.product.name,
+    //             price: data.product.price,
+    //             image: data.product.images[0].url,
+    //             stock: data.product.stock,
+    //             quantity: quantity
+    //         }
+            
+    //         const isItemExist = state.cartItems.find(i => i.product === item.product)
+    //         console.log(isItemExist, state)
+    //         setState({
+    //             ...state,
+    //             cartItems: [...state.cartItems, item]
+    //         })
+    //         if (isItemExist) {
+    //             setState({
+    //                 ...state,
+    //                 cartItems: state.cartItems.map(i => i.product === isItemExist.product ? item : i)
+    //             })
+    //         }
+    //         else {
+    //             setState({
+    //                 ...state,
+    //                 cartItems: [...state.cartItems, item]
+    //             })
+    //         }
+           
+    //         toast.success('Item Added to Cart', {
+    //             position: toast.POSITION.BOTTOM_RIGHT
+    //         })
+
+    //     } catch (error) {
+    //         toast.error(error, {
+    //             position: toast.POSITION.TOP_LEFT
+    //         });
+    //         navigate('/')
+    //     }
+    // }
+
+    const addToCart =  async () => {
+        await addItemToCart(id, quantity);
+    }
     useEffect(() => {
         productDetails(id)
         if (error) {
@@ -50,13 +115,14 @@ const ProductDetails = () => {
                 position: toast.POSITION.TOP_LEFT
             });
             navigate('/')
-
         }
     }, [id, error,]);
-console.log(error)
+    localStorage.setItem('cartItems', JSON.stringify(cartItems))
+    // console.log(state.cartItems)
+    // console.log(cart)
     return (
         <Fragment>
-           
+
             {loading ? <Loader /> : (
                 <Fragment>
                     <MetaData title={product.name} />
@@ -86,13 +152,13 @@ console.log(error)
 
                             <p id="product_price">${product.price}</p>
                             <div className="stockCounter d-inline">
-                                <span className="btn btn-danger minus" >-</span>
+                                <span className="btn btn-danger minus" onClick={decreaseQty}>-</span>
 
-                                {/* <input type="number" className="form-control count d-inline" value={quantity} readOnly /> */}
-                                <span className="btn btn-primary plus"> +</span>
-                                {/* <span className="btn btn-primary plus" onClick={increaseQty}+</span> */}
+                                <input type="number" className="form-control count d-inline" value={quantity} readOnly />
+
+                                <span className="btn btn-primary plus" onClick={increaseQty}>+</span>
                             </div>
-                            <button type="button" id="cart_btn" className="btn btn-primary d-inline ml-4"  >Add to Cart</button>
+                            <button type="button" id="cart_btn" className="btn btn-primary d-inline ml-4" disabled={product.stock === 0} onClick={addToCart}>Add to Cart</button>
 
                             <hr />
 
