@@ -25,6 +25,8 @@ import OrderDetails from './Components/Order/OrderDetails';
 import Dashboard from './Components/Admin/Dashboard';
 import ProductsList from './Components/Admin/ProductsList';
 import NewProduct from './Components/Admin/NewProduct';
+import UpdateProduct from './Components/Admin/UpdateProduct';
+import OrdersList from './Components/Admin/OrdersList';
 
 import axios from 'axios';
 
@@ -130,6 +132,13 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}  />
           <Route path="/admin/products" element={<ProductsList />}  />
           <Route path="/admin/product" element={<NewProduct  />}  />
+          <Route
+          path="/admin/product/:id"
+          element={<UpdateProduct />} />
+          <Route
+          path="/admin/orders"
+          element={<OrdersList />}
+        />
         </Routes>
       </Router>
       <Footer />
