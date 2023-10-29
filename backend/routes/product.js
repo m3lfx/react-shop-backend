@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require("../utils/multer");
 
-const { getProducts, newProduct, getSingleProduct, updateProduct, deleteProduct, getAdminProducts, createProductReview } = require('../controllers/productController');
+const { getProducts, newProduct, getSingleProduct, updateProduct, deleteProduct, getAdminProducts, createProductReview, getProductReviews, deleteReview } = require('../controllers/productController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
 router.get('/products', getProducts)
@@ -14,4 +14,6 @@ router.route('/admin/product/:id', isAuthenticatedUser, ).put(updateProduct).del
 router.get('/admin/products', getAdminProducts);
 router.post('/admin/product/new', isAuthenticatedUser, upload.array('images', 10), newProduct);
 router.put('/review', isAuthenticatedUser, createProductReview);
+router.get('/reviews',isAuthenticatedUser, getProductReviews)
+router.delete('/reviews', isAuthenticatedUser, authorizeRoles('admin'), deleteReview)
 module.exports = router;
