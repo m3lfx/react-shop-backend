@@ -39,7 +39,13 @@ const OrdersList = () => {
     }
     const deleteOrder = async (id) => {
         try {
-            const { data } = await axios.delete(`${process.env.REACT_APP_API}/api/v1/admin/order/${id}`, { withCredentials: true })
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                }
+            }
+            const { data } = await axios.delete(`${process.env.REACT_APP_API}/api/v1/admin/order/${id}`, config)
             setIsDeleted(data.success)
             setLoading(false)
         } catch (error) {

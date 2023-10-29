@@ -37,16 +37,12 @@ exports.newOrder = async (req, res, next) => {
 // Get single order   =>   /api/v1/order/:id
 exports.getSingleOrder = async (req, res, next) => {
     const order = await Order.findById(req.params.id).populate('user', 'name email')
-
     if (!order) {
         res.status(404).json({
             message: 'No Order found with this ID',
-            
+
         })
-      
     }
-
-
     res.status(200).json({
         success: true,
         order
@@ -56,7 +52,7 @@ exports.getSingleOrder = async (req, res, next) => {
 // Get logged in user orders   =>   /api/v1/orders/me
 exports.myOrders = async (req, res, next) => {
     const orders = await Order.find({ user: req.user.id })
-// console.log(req.user)
+    // console.log(req.user)
     res.status(200).json({
         success: true,
         orders
@@ -84,20 +80,21 @@ exports.allOrders = async (req, res, next) => {
 // Update / Process order - ADMIN  =>   /api/v1/admin/order/:id
 exports.updateOrder = async (req, res, next) => {
     const order = await Order.findById(req.params.id)
-
+    console.log(req.body.order)
     if (order.orderStatus === 'Delivered') {
-        return next(new ErrorHandler('You have already delivered this order', 400))
+        return res.status(400).json({
+            message: 'You have already delivered this order',
+
+        })
     }
 
     order.orderItems.forEach(async item => {
         await updateStock(item.product, item.quantity)
     })
 
-    order.orderStatus = req.body.status,
-        order.deliveredAt = Date.now()
-
+    order.orderStatus = req.body.status
+    order.deliveredAt = Date.now()
     await order.save()
-
     res.status(200).json({
         success: true,
     })
@@ -113,15 +110,16 @@ async function updateStock(id, quantity) {
 
 // Delete order   =>   /api/v1/admin/order/:id
 exports.deleteOrder = async (req, res, next) => {
-    const order = await Order.findById(req.params.id)
+    const order = await Order.findByIdAndRemove(req.params.id)
 
     if (!order) {
-        return next(new ErrorHandler('No Order found with this ID', 404))
+        return res.status(400).json({
+            message: 'No Order found with this ID',
+
+        })
+        // return next(new ErrorHandler('No Order found with this ID', 404))
     }
-
-    await order.remove()
-
-    res.status(200).json({
+    return res.status(200).json({
         success: true
     })
 }

@@ -47,8 +47,8 @@ exports.loginUser = async (req, res, next) => {
     // }
 
     // Finding user in database
-    const user = await User.findOne({ email }).select('+password')
-
+    // const userPass = await User.findOne({ email }).select('+password')
+    let user = await User.findOne({ email }).select('+password')
     if (!user) {
         return res.status(401).json({ message: 'Invalid Email or Password' })
     }
@@ -72,6 +72,7 @@ exports.loginUser = async (req, res, next) => {
 
     //  	token
     //  });
+     user = await User.findOne({ email })
     sendToken(user, 200, res)
 }
 
@@ -230,5 +231,40 @@ exports.getUserDetails = async (req, res, next) => {
     res.status(200).json({
         success: true,
         user
+    })
+}
+
+exports.deleteUser = async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return res.status(401).json({ message: `User does not found with id: ${req.params.id}` })
+        // return next(new ErrorHandler(`User does not found with id: ${req.params.id}`))
+    }
+
+    // Remove avatar from cloudinary
+    const image_id = user.avatar.public_id;
+    await cloudinary.v2.uploader.destroy(image_id);
+    await User.findByIdAndRemove(req.params.id);
+    return res.status(200).json({
+        success: true,
+    })
+}
+
+exports.updateUser = async (req, res, next) => {
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true,
+        // useFindAndModify: false
+    })
+
+    return res.status(200).json({
+        success: true
     })
 }
