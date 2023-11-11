@@ -5,6 +5,7 @@ import MetaData from '../Layout/MetaData'
 const OrderSuccess = () => {
     sessionStorage.clear();
     // localStorage.clear();
+    // sessionStorage.removeItem()
     localStorage.removeItem('cartItems');
     localStorage.removeItem('shippingInfo');
     return (
